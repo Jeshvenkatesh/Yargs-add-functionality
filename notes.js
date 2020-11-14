@@ -1,16 +1,10 @@
 const fs = require('fs');
 
 const addNote = (title, body) => {
-
-
     const notes = loadNotes();
-
     const duplacteNote = notes.filter((note) => {
-
         return note.title === title;
-
     });
-
     if(duplacteNote.length === 0){
         notes.push({
             title: title,
@@ -19,79 +13,71 @@ const addNote = (title, body) => {
     }else{
         console.log("Note was already present")
     }
-
     saveNotes(notes);
-
 }
 
-const loadNotes = () => {
+const removeNote = (title) => {
+ 
+    const notes = loadNotes();
 
-    try{
-        const dataBuffer = fs.readFileSync('notes.json');
+    const notesTokeep = notes.filter((notes) => {
+          
+        return notes.title !== title
+    });
 
-        const dataString = dataBuffer.toString();
+    if(notesTokeep.length < notes.length){
 
-        return JSON.parse(dataString);
+        console.log("remove the note successfully!");
+        saveNotes(notesTokeep);
+    }else {
+        console.log("no note with this title")
+    }
 
-    }catch(e){
+}
+ // list all notes...here
+const listNotes = () => {
+    // console.log('List the notes');
+    const notes = loadNotes();
 
-        return [];
+    notes.forEach(note => {
+         console.log(note.title);
+    });
+};
 
+const readNotes = (title) => {
+    const notes = loadNotes();
+
+    const note = notes.find((note) => note.title === title );
+
+    if(note){
+        console.log("Note : " + note.title);
+        console.log("Body : " + note.body);
+    }else{
+        console.log("note not found");
     }
 
 }
 
+const loadNotes = () => {
+    try{
+        const dataBuffer = fs.readFileSync('notes.json');
+        const dataString = dataBuffer.toString();
+        return JSON.parse(dataString);
+    }catch(e){
+        return [];
+    }
+}
+
 const saveNotes = (notes) => {
-
-    fs.writeFileSync('notes.json', JSON.stringify(notes))
-   
+    fs.writeFileSync('notes.json', JSON.stringify(notes))  
 }
+
+
+
 module.exports = {
-   addNote : addNote
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// const fs = require('fs');
-
-// const addNote = (title, body) => {
-
-//     const notes = loadNotes();
-
-//     const duplicateNote = notes.filter( (note)=> {
-          
-//         return note.title === title;
-
-//     });
-         
-//     if(duplicateNote.length === 0){
-
-//         notes.push({
-//             title: title,
-//             body: body
-//         });
-    
-//         saveNotes(notes)
-//         console.log("Note was added successfully!!")
-
-//     }else {
-//         console.log("Note was already present")
-//     }
+   addNote : addNote,
+   removeNote : removeNote,
+   listNotes : listNotes,
+   readNotes : readNotes
    
-
-// };
-
-
-
-// module.exports = {
-//     addNote : addNote
-// }
+}
